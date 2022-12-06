@@ -81,7 +81,7 @@ const SignIn = () => {
       </Stack>
       <Stack spacing={1}>
         <Typography>아직 회원이 아니신가요?</Typography>
-        <Link href="/">가입하기</Link>
+        <Link onClick={() => navigate("/")}>가입하기</Link>
       </Stack>
     </Box>
   );

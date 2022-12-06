@@ -79,12 +79,11 @@ const Register = () => {
           }}
           helperText={
             !input.email
-              ? "이메일이 입력되지 않았습니다."
+              ? "이메일을 입력해주세요."
               : !validEmail
-              ? "이메일 형식이 올바르지 않습니다."
+              ? "이메일은 '@'문자를 포함해야 합니다."
               : ""
           }
-          error={!validEmail}
         />
         <TextField
           label="Password"
@@ -95,12 +94,11 @@ const Register = () => {
           autoComplete="off"
           helperText={
             !input.password
-              ? "비밀번호가 입력되지 않았습니다."
+              ? "비밀번호를 입력해주세요."
               : !validPassword
-              ? "비밀번호는 대,소문자,숫자,특수기호가 최소한 1글자 이상 필요합니다."
+              ? "비밀번호는 대,소문자,숫자,특수기호를 각 1글자 이상 포함해야 합니다."
               : ""
           }
-          error={!validPassword}
         />
         <Button
           type="submit"
@@ -112,7 +110,7 @@ const Register = () => {
       </Stack>
       <Stack spacing={1}>
         <Typography>이미 회원이신가요?</Typography>
-        <Link href="/signIn">로그인하기</Link>
+        <Link onClick={() => navigate("/signIn")}>로그인하기</Link>
       </Stack>
     </Box>
   );
@@ -133,6 +131,10 @@ const InputFieldSxProps = {
   display: "flex",
   flexDirection: "column",
   margin: "10px 0",
+  ".MuiFormHelperText-root": {
+    ml: 0.5,
+    color: "primary.main",
+  },
 };
 
 const errorSxProps = {

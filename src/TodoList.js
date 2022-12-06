@@ -44,6 +44,7 @@ const TodoList = () => {
     });
 
     getTodos();
+    setTodoInput("");
   };
 
   const handleUpdateTodo = async (e) => {
