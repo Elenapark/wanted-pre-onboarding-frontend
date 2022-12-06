@@ -1,10 +1,12 @@
 import { Box } from "@mui/material";
 import Register from "./Register.js";
+import SignIn from "./SignIn.js";
 
 function App() {
   return (
     <Box sx={ContainerSxProps}>
-      <Register />
+      {/* <Register /> */}
+      <SignIn />
     </Box>
   );
 }

@@ -1,8 +1,8 @@
 import { API } from "../config/api";
 
-export const register = async (contents) => {
+export const signIn = async (contents) => {
   try {
-    const res = await fetch(`${API}/auth/signup`, {
+    const res = await fetch(`${API}/auth/signin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -10,7 +10,6 @@ export const register = async (contents) => {
       body: JSON.stringify(contents),
     });
 
-    console.log(res.ok);
     return res.json();
   } catch (err) {
     console.error(`API 응답에 실패했습니다.${err}`);
