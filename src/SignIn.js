@@ -1,9 +1,11 @@
 import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { signIn } from "./services/signIn_service";
 import customStorage from "./utils/customStorage";
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const emailRef = useRef();
 
   const [input, setInput] = useState({
@@ -30,6 +32,8 @@ const SignIn = () => {
     if (res.access_token) {
       setAccessToken(res.access_token);
       customStorage.setItem("accessToken", res.access_token);
+      alert("로그인되었습니다.");
+      navigate("/todo");
     } else {
       setResError(res);
     }

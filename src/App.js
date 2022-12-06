@@ -1,12 +1,10 @@
 import { Box } from "@mui/material";
-import Register from "./Register.js";
-import SignIn from "./SignIn.js";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
     <Box sx={ContainerSxProps}>
-      {/* <Register /> */}
-      <SignIn />
+      <Outlet />
     </Box>
   );
 }

@@ -7,7 +7,7 @@ const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const Register = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const emailRef = useRef();
 
   const [input, setInput] = useState({
@@ -32,8 +32,8 @@ const Register = () => {
       password,
     });
     if (res.access_token) {
-      alert("회원가입이 완료되었습니다.");
-      // navigate("/login");
+      alert("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
+      navigate("/signIn");
     } else {
       setResError(res);
     }
