@@ -9,7 +9,7 @@ const TodoInput = ({ value, onChange, onSubmit, ...props }) => {
         name="todo"
         value={value}
         onChange={onChange}
-        sx={inputSxProps}
+        sx={{ margin: "10px 0" }}
         {...props}
       />
       <Button type="submit" variant="contained">
@@ -22,12 +22,6 @@ const TodoInput = ({ value, onChange, onSubmit, ...props }) => {
 export default TodoInput;
 
 const inputContainerSxProps = {
-  display: "flex",
-  flexDirection: "column",
-  margin: "10px 0",
-};
-
-const inputSxProps = {
   display: "flex",
   flexDirection: "column",
   margin: "10px 0",

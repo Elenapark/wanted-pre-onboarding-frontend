@@ -1,10 +1,15 @@
 import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signIn } from "./services/signIn_service";
-import customStorage from "./utils/customStorage";
+import { register } from "../services/register_service";
+import { ACCESS_TOKEN_KEY } from "./TodoList";
+import customStorage from "../utils/customStorage";
 
-const SignIn = () => {
+const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+
+const Register = () => {
+  const userToken = customStorage.getItem(ACCESS_TOKEN_KEY, null);
   const navigate = useNavigate();
   const emailRef = useRef();
 
@@ -13,7 +18,8 @@ const SignIn = () => {
     password: "",
   });
 
-  const [accessToken, setAccessToken] = useState("");
+  const [validEmail, setValidEmail] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
   const [resError, setResError] = useState("");
 
   const handleInputChange = (e) => {
@@ -24,29 +30,40 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = input;
-    const res = await signIn({
+    const res = await register({
       email,
       password,
     });
-
     if (res.access_token) {
-      setAccessToken(res.access_token);
-      customStorage.setItem("accessToken", res.access_token);
-      alert("로그인되었습니다.");
-      navigate("/todo");
+      alert("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
+      navigate("/signIn");
     } else {
       setResError(res);
     }
   };
 
   useEffect(() => {
+    const result = EMAIL_REGEX.test(input.email);
+    setValidEmail(result);
+  }, [input.email]);
+
+  useEffect(() => {
+    const result = PWD_REGEX.test(input.password);
+    setValidPassword(result);
+  }, [input.password]);
+
+  useEffect(() => {
+    if (userToken) {
+      alert("로그인된 유저이므로 바로 투두리스트로 이동합니다.");
+      navigate("/todo");
+    }
     emailRef.current.focus();
   }, []);
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={RegisterFormSxProps}>
       {resError && <Box sx={errorSxProps}>{resError.message}</Box>}
-      <Typography variant="h6">로그인</Typography>
+      <Typography variant="h6">회원가입</Typography>
       <Stack sx={InputFieldSxProps} spacing={2}>
         <TextField
           label="Email"
@@ -60,7 +77,13 @@ const SignIn = () => {
               autocomplete: "off",
             },
           }}
-          required
+          helperText={
+            !input.email
+              ? "이메일을 입력해주세요."
+              : !validEmail
+              ? "이메일은 '@'문자를 포함해야 합니다."
+              : ""
+          }
         />
         <TextField
           label="Password"
@@ -69,25 +92,31 @@ const SignIn = () => {
           value={input.password}
           onChange={handleInputChange}
           autoComplete="off"
-          required
+          helperText={
+            !input.password
+              ? "비밀번호를 입력해주세요."
+              : !validPassword
+              ? "비밀번호는 대,소문자,숫자,특수기호를 각 1글자 이상 포함해야 합니다."
+              : ""
+          }
         />
         <Button
           type="submit"
-          disabled={!input.email || !input.password}
+          disabled={!validEmail || !validPassword}
           variant="contained"
         >
-          로그인하기
+          제출하기
         </Button>
       </Stack>
       <Stack spacing={1}>
-        <Typography>아직 회원이 아니신가요?</Typography>
-        <Link onClick={() => navigate("/")}>가입하기</Link>
+        <Typography>이미 회원이신가요?</Typography>
+        <Link onClick={() => navigate("/signIn")}>로그인하기</Link>
       </Stack>
     </Box>
   );
 };
 
-export default SignIn;
+export default Register;
 
 const RegisterFormSxProps = {
   maxWidth: 370,
@@ -102,6 +131,10 @@ const InputFieldSxProps = {
   display: "flex",
   flexDirection: "column",
   margin: "10px 0",
+  ".MuiFormHelperText-root": {
+    ml: 0.5,
+    color: "primary.main",
+  },
 };
 
 const errorSxProps = {

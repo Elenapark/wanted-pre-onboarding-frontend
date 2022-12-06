@@ -1,8 +1,7 @@
 import {
   Box,
   Button,
-  List,
-  ListItem,
+  Checkbox,
   Stack,
   TextField,
   Typography,
@@ -13,10 +12,10 @@ import {
   getTodoList,
   updateTodo,
   deleteTodo,
-} from "./services/todo_service";
-import customStorage from "./utils/customStorage";
+} from "../services/todo_service";
+import customStorage from "../utils/customStorage";
 import TodoInput from "./TodoInput";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const ACCESS_TOKEN_KEY = "accessToken";
 
@@ -26,9 +25,11 @@ const TodoList = () => {
 
   const [todoInput, setTodoInput] = useState("");
   const [todos, setTodos] = useState([]);
+
+  const [isCompleted, setIsCompleted] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
   const [editInput, setEditInput] = useState("");
+
   const storageToken = customStorage.getItem(ACCESS_TOKEN_KEY, null, (err) => {
     console.error(err);
   });
@@ -47,12 +48,12 @@ const TodoList = () => {
     setTodoInput("");
   };
 
-  const handleUpdateTodo = async (e) => {
+  const handleUpdateTodo = async (existTodo) => {
     await updateTodo(storageToken, editingItem, {
-      todo: editInput,
-      isCompleted: false,
+      todo: editInput ? editInput : existTodo,
+      isCompleted,
     });
-    setIsEditing(false);
+    setEditInput("");
     setEditingItem(null);
     getTodos();
   };
@@ -72,14 +73,14 @@ const TodoList = () => {
 
   useEffect(() => {
     if (!userToken) {
-      alert("로그인 정보가 없어 회원가입/로그인 페이지로 이동합니다.");
+      alert("로그인 정보가 없어 회원가입 및 로그인 페이지로 이동합니다.");
       navigate("/");
     }
     getTodos();
   }, []);
 
   return (
-    <Box sx={RegisterFormSxProps}>
+    <Box sx={registerFormSxProps}>
       <Typography variant="h5" fontWeight="bold">
         Todo List
       </Typography>
@@ -100,7 +101,8 @@ const TodoList = () => {
                 <Typography
                   sx={{
                     textDecoration: todo.isCompleted ? "line-through" : "none",
-                    fontSize: 20,
+                    color: "primary.main",
+                    fontSize: 18,
                   }}
                 >
                   {todo.todo}
@@ -124,50 +126,43 @@ const TodoList = () => {
               <Box
                 sx={{
                   display: todo.id === editingItem ? "block" : "none",
-                  margin: "16px 0",
-                  border: "secondary.main",
-                  color: "#fff",
                 }}
               >
                 {todo.id === editingItem &&
                   todos.map((todo) => {
                     if (todo.id === editingItem) {
                       return (
-                        <Box
-                          key={`edit ${todo.id}`}
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            padding: "12px",
-                            ".MuiInputBase-input": {
-                              padding: "8px",
-                            },
-                          }}
-                        >
-                          <TextField
-                            label="Edit"
-                            name="editTodo"
-                            placeholder={todo.todo}
-                            value={editInput}
-                            onChange={(e) => setEditInput(e.target.value)}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                          >
-                            {todo.todo}
-                          </TextField>
+                        <Box key={`edit ${todo.id}`} sx={editSxProps}>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Checkbox
+                              checked={isCompleted}
+                              onChange={() => setIsCompleted(!isCompleted)}
+                              inputProps={{ "aria-label": "controlled" }}
+                              sx={checkboxSxProps}
+                            />
+                            <TextField
+                              label="Edit"
+                              name="editTodo"
+                              placeholder={todo.todo}
+                              value={editInput}
+                              onChange={(e) => setEditInput(e.target.value)}
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                            >
+                              {todo.todo}
+                            </TextField>
+                          </Box>
                           <Stack direction="row" spacing={1}>
                             <Button
                               variant="outlined"
-                              onClick={handleUpdateTodo}
+                              onClick={() => handleUpdateTodo(todo.todo)}
                             >
                               제출
                             </Button>
                             <Button
                               variant="contained"
                               onClick={() => {
-                                setIsEditing(false);
                                 setEditingItem(null);
                               }}
                             >
@@ -189,7 +184,7 @@ const TodoList = () => {
 
 export default TodoList;
 
-const RegisterFormSxProps = {
+const registerFormSxProps = {
   maxWidth: 370,
   width: "100%",
   background: "#fff",
@@ -199,13 +194,27 @@ const RegisterFormSxProps = {
 };
 
 const todoSxProps = {
-  color: "secondary.main",
-  padding: "12px",
-  borderRadius: "4px",
   background: "background.default",
-  boxShadow: "0 5px 10px rgba(0, 0, 0, 0.1)",
-
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+};
+
+const editSxProps = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "12px 0",
+  ".MuiInputBase-input": {
+    padding: "8px",
+  },
+};
+
+const checkboxSxProps = {
+  padding: 0,
+  mr: 1,
+  color: "primary.main",
+  "&.Mui-checked": {
+    color: "secondary.main",
+  },
 };
