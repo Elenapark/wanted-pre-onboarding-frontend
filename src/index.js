@@ -8,6 +8,7 @@ import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import Register from "./Register.js";
 import SignIn from "./SignIn.js";
 import { Box } from "@mui/material";
+import TodoList from "./TodoList";
 
 const errorSxProps = {
   height: "100vh",
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/signIn",
         element: <SignIn />,
+      },
+      {
+        path: "/todo",
+        element: <TodoList />,
       },
     ],
   },
