@@ -16,10 +16,14 @@ import {
 } from "./services/todo_service";
 import customStorage from "./utils/customStorage";
 import TodoInput from "./TodoInput";
+import { Navigate, useNavigate } from "react-router-dom";
 
-const ACCESS_TOKEN_KEY = "accessToken";
+export const ACCESS_TOKEN_KEY = "accessToken";
 
 const TodoList = () => {
+  const userToken = customStorage.getItem(ACCESS_TOKEN_KEY, null);
+  const navigate = useNavigate();
+
   const [todoInput, setTodoInput] = useState("");
   const [todos, setTodos] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
@@ -66,6 +70,10 @@ const TodoList = () => {
   };
 
   useEffect(() => {
+    if (!userToken) {
+      alert("로그인 정보가 없어 회원가입/로그인 페이지로 이동합니다.");
+      navigate("/");
+    }
     getTodos();
   }, []);
 

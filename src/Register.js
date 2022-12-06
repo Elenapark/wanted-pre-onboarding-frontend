@@ -2,11 +2,14 @@ import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register } from "./services/register_service";
+import { ACCESS_TOKEN_KEY } from "./TodoList";
+import customStorage from "./utils/customStorage";
 
 const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const Register = () => {
+  const userToken = customStorage.getItem(ACCESS_TOKEN_KEY, null);
   const navigate = useNavigate();
   const emailRef = useRef();
 
@@ -50,6 +53,10 @@ const Register = () => {
   }, [input.password]);
 
   useEffect(() => {
+    if (userToken) {
+      alert("로그인된 유저이므로 바로 투두리스트로 이동합니다.");
+      navigate("/todo");
+    }
     emailRef.current.focus();
   }, []);
 
