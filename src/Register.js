@@ -1,5 +1,7 @@
 import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
+import { register } from "./services/register_service";
+import customStorage from "./utils/customStorage";
 
 const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -14,6 +16,8 @@ const Register = () => {
 
   const [validEmail, setValidEmail] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
+  const [resError, setResError] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -21,9 +25,19 @@ const Register = () => {
     setInput({ ...input, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = input;
+    const res = await register({
+      email,
+      password,
+    });
+    if (res.ok && res.access_token) {
+      setAccessToken(res.access_token);
+      customStorage.setItem("accessToken", res.access_token);
+    } else {
+      setResError(res);
+    }
   };
 
   useEffect(() => {
@@ -42,6 +56,7 @@ const Register = () => {
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={RegisterFormSxProps}>
+      {resError && <Box sx={errorSxProps}>{resError.message}</Box>}
       <Typography variant="h6">회원가입</Typography>
       <Stack sx={InputFieldSxProps} spacing={2}>
         <TextField
@@ -83,7 +98,6 @@ const Register = () => {
         />
         <Button
           type="submit"
-          onClick={() => {}}
           disabled={!validEmail || !validPassword}
           variant="contained"
         >
@@ -113,4 +127,13 @@ const InputFieldSxProps = {
   display: "flex",
   flexDirection: "column",
   margin: "10px 0",
+};
+
+const errorSxProps = {
+  bgcolor: "secondary.main",
+  color: "#fff",
+  padding: "10px",
+  borderRadius: "4px",
+  fontSize: "14px",
+  mb: 2,
 };

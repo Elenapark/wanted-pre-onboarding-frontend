@@ -1,4 +1,5 @@
 import { createTheme, ThemeProvider } from "@mui/material";
+import { orange } from "@mui/material/colors";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Reset } from "styled-reset";
@@ -8,6 +9,9 @@ const theme = createTheme({
   palette: {
     primary: {
       main: "#387ed9",
+    },
+    secondary: {
+      main: orange[500],
     },
     background: {
       default: "#f4f4f4",
