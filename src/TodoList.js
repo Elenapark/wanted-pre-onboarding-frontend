@@ -1,8 +1,20 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  List,
+  ListItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { addTodo, getTodoList } from "./services/todo_service";
+import {
+  addTodo,
+  getTodoList,
+  updateTodo,
+  deleteTodo,
+} from "./services/todo_service";
 import customStorage from "./utils/customStorage";
-import { todos as todoMocks } from "./mocks/todos";
 import TodoInput from "./TodoInput";
 
 const ACCESS_TOKEN_KEY = "accessToken";
@@ -10,6 +22,9 @@ const ACCESS_TOKEN_KEY = "accessToken";
 const TodoList = () => {
   const [todoInput, setTodoInput] = useState("");
   const [todos, setTodos] = useState([]);
+  const [editingItem, setEditingItem] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editInput, setEditInput] = useState("");
   const storageToken = customStorage.getItem(ACCESS_TOKEN_KEY, null, (err) => {
     console.error(err);
   });
@@ -27,6 +42,24 @@ const TodoList = () => {
     getTodos();
   };
 
+  const handleUpdateTodo = async (e) => {
+    await updateTodo(storageToken, editingItem, {
+      todo: editInput,
+      isCompleted: false,
+    });
+    setIsEditing(false);
+    setEditingItem(null);
+    getTodos();
+  };
+
+  const handleDeleteTodo = async (id) => {
+    const res = await deleteTodo(storageToken, id);
+    if (res.status === 204) {
+      alert("삭제되었습니다.");
+      getTodos();
+    }
+  };
+
   const getTodos = async () => {
     const res = await getTodoList(storageToken);
     setTodos(res);
@@ -41,6 +74,7 @@ const TodoList = () => {
       <Typography variant="h5" fontWeight="bold">
         Todo List
       </Typography>
+
       {/* todo input */}
       <TodoInput
         value={todoInput}
@@ -52,17 +86,91 @@ const TodoList = () => {
       <Stack component="ul" spacing={2} mt={2}>
         {todos.map((todo) => {
           return (
-            <Box key={todo.id} component="li" sx={todoSxProps}>
-              <Typography
+            <>
+              <Box key={`list ${todo.id}`} component="li" sx={todoSxProps}>
+                <Typography
+                  sx={{
+                    textDecoration: todo.isCompleted ? "line-through" : "none",
+                    fontSize: 20,
+                  }}
+                >
+                  {todo.todo}
+                </Typography>
+                <Stack direction="row" spacing={1}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => setEditingItem(todo.id)}
+                  >
+                    수정
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleDeleteTodo(todo.id)}
+                  >
+                    삭제
+                  </Button>
+                </Stack>
+              </Box>
+              {/* edit mode view */}
+              <Box
                 sx={{
-                  textDecoration: todo.isCompleted ? "line-through" : "none",
-                  fontSize: 20,
+                  display: todo.id === editingItem ? "block" : "none",
+                  margin: "16px 0",
+                  border: "secondary.main",
+                  color: "#fff",
                 }}
               >
-                {todo.todo}
-              </Typography>
-              <Button variant="contained">수정</Button>
-            </Box>
+                {todo.id === editingItem &&
+                  todos.map((todo) => {
+                    if (todo.id === editingItem) {
+                      return (
+                        <Box
+                          key={`edit ${todo.id}`}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "12px",
+                            ".MuiInputBase-input": {
+                              padding: "8px",
+                            },
+                          }}
+                        >
+                          <TextField
+                            label="Edit"
+                            name="editTodo"
+                            placeholder={todo.todo}
+                            value={editInput}
+                            onChange={(e) => setEditInput(e.target.value)}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                          >
+                            {todo.todo}
+                          </TextField>
+                          <Stack direction="row" spacing={1}>
+                            <Button
+                              variant="outlined"
+                              onClick={handleUpdateTodo}
+                            >
+                              제출
+                            </Button>
+                            <Button
+                              variant="contained"
+                              onClick={() => {
+                                setIsEditing(false);
+                                setEditingItem(null);
+                              }}
+                            >
+                              취소
+                            </Button>
+                          </Stack>
+                        </Box>
+                      );
+                    }
+                  })}
+              </Box>
+            </>
           );
         })}
       </Stack>

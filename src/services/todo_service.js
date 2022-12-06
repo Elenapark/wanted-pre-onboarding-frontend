@@ -63,7 +63,8 @@ export const deleteTodo = async (token, id) => {
       },
     });
     if (res.ok) {
-      return res.json();
+      console.log(res);
+      return res;
     }
     return Promise.reject(new Error("API 요청에 실패했습니다."));
   } catch (err) {

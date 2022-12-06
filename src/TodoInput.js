@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import React from "react";
 
-const TodoInput = ({ value, onChange, onSubmit }) => {
+const TodoInput = ({ value, onChange, onSubmit, ...props }) => {
   return (
     <Box component="form" onSubmit={onSubmit} sx={inputContainerSxProps}>
       <TextField
@@ -10,6 +10,7 @@ const TodoInput = ({ value, onChange, onSubmit }) => {
         value={value}
         onChange={onChange}
         sx={inputSxProps}
+        {...props}
       />
       <Button type="submit" variant="contained">
         추가
