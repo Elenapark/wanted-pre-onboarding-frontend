@@ -97,7 +97,7 @@ const TodoList = () => {
           onClick={() => {
             alert("로그아웃되었습니다.");
             localStorage.removeItem(ACCESS_TOKEN_KEY);
-            navigate("/signin");
+            navigate("/signIn");
           }}
           sx={{ fontSize: 14 }}
         >

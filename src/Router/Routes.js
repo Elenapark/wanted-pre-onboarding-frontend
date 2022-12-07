@@ -13,7 +13,7 @@ const errorSxProps = {
   fontSize: "24px",
 };
 
-const router = createBrowserRouter([
+const routes = [
   {
     path: "/",
     element: <App />,
@@ -33,6 +33,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+];
+
+const router = createBrowserRouter(routes, {
+  basename: "/wanted-pre-onboarding-frontend",
+});
 
 export default router;
