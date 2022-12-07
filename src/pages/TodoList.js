@@ -2,10 +2,17 @@ import {
   Box,
   Button,
   Checkbox,
+  IconButton,
+  Link,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import DoneIcon from "@mui/icons-material/Done";
+
 import React, { useEffect, useState } from "react";
 import {
   addTodo,
@@ -16,6 +23,7 @@ import {
 import customStorage from "../utils/customStorage";
 import TodoInput from "./TodoInput";
 import { useNavigate } from "react-router-dom";
+import { red } from "@mui/material/colors";
 
 export const ACCESS_TOKEN_KEY = "accessToken";
 
@@ -81,9 +89,21 @@ const TodoList = () => {
 
   return (
     <Box sx={registerFormSxProps}>
-      <Typography variant="h5" fontWeight="bold">
-        Todo List
-      </Typography>
+      <Box sx={titleBoxSxProps}>
+        <Typography variant="h6" fontWeight="bold">
+          Todo List
+        </Typography>
+        <Link
+          onClick={() => {
+            alert("로그아웃되었습니다.");
+            localStorage.removeItem(ACCESS_TOKEN_KEY);
+            navigate("/signin");
+          }}
+          sx={{ fontSize: 14 }}
+        >
+          로그아웃하기
+        </Link>
+      </Box>
 
       {/* todo input */}
       <TodoInput
@@ -93,33 +113,35 @@ const TodoList = () => {
       />
 
       {/* todo list */}
-      <Stack component="ul" spacing={2} mt={2}>
+      <Stack component="ul" spacing={2} mt={todos.length > 0 ? 2 : 0}>
         {todos.map((todo) => {
           return (
-            <>
-              <Box key={`list ${todo.id}`} component="li" sx={todoSxProps}>
+            <Box key={`list ${todo.id}`}>
+              <Box component="li" sx={todoSxProps}>
                 <Typography
                   sx={{
                     textDecoration: todo.isCompleted ? "line-through" : "none",
-                    color: "primary.main",
-                    fontSize: 18,
+                    color: todo.isCompleted ? "#ccc" : "",
+                    fontSize: 16,
                   }}
                 >
                   {todo.todo}
                 </Typography>
                 <Stack direction="row" spacing={1}>
-                  <Button
-                    variant="outlined"
+                  <IconButton
                     onClick={() => setEditingItem(todo.id)}
+                    aria-label="edit todo item"
+                    color="primary"
                   >
-                    수정
-                  </Button>
-                  <Button
-                    variant="contained"
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
                     onClick={() => handleDeleteTodo(todo.id)}
+                    aria-label="delete todo item"
+                    color="secondary"
                   >
-                    삭제
-                  </Button>
+                    <DeleteIcon />
+                  </IconButton>
                 </Stack>
               </Box>
               {/* edit mode view */}
@@ -128,53 +150,51 @@ const TodoList = () => {
                   display: todo.id === editingItem ? "block" : "none",
                 }}
               >
-                {todo.id === editingItem &&
-                  todos.map((todo) => {
-                    if (todo.id === editingItem) {
-                      return (
-                        <Box key={`edit ${todo.id}`} sx={editSxProps}>
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Checkbox
-                              checked={isCompleted}
-                              onChange={() => setIsCompleted(!isCompleted)}
-                              inputProps={{ "aria-label": "controlled" }}
-                              sx={checkboxSxProps}
-                            />
-                            <TextField
-                              label="Edit"
-                              name="editTodo"
-                              placeholder={todo.todo}
-                              value={editInput}
-                              onChange={(e) => setEditInput(e.target.value)}
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                            >
-                              {todo.todo}
-                            </TextField>
-                          </Box>
-                          <Stack direction="row" spacing={1}>
-                            <Button
-                              variant="outlined"
-                              onClick={() => handleUpdateTodo(todo.todo)}
-                            >
-                              제출
-                            </Button>
-                            <Button
-                              variant="contained"
-                              onClick={() => {
-                                setEditingItem(null);
-                              }}
-                            >
-                              취소
-                            </Button>
-                          </Stack>
+                {todos.map((todo) => {
+                  if (todo.id === editingItem) {
+                    return (
+                      <Box key={`edit ${todo.id}`} sx={editSxProps}>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <Checkbox
+                            checked={isCompleted}
+                            onChange={() => setIsCompleted(!isCompleted)}
+                            inputProps={{ "aria-label": "controlled" }}
+                            sx={checkboxSxProps}
+                          />
+                          <TextField
+                            label="Edit"
+                            name="editTodo"
+                            placeholder={todo.todo}
+                            value={editInput}
+                            onChange={(e) => setEditInput(e.target.value)}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                          >
+                            {todo.todo}
+                          </TextField>
                         </Box>
-                      );
-                    }
-                  })}
+                        <Stack direction="row" spacing={1}>
+                          <IconButton
+                            variant="outlined"
+                            onClick={() => handleUpdateTodo(todo.todo)}
+                          >
+                            <DoneIcon />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => {
+                              setEditingItem(null);
+                            }}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </Stack>
+                      </Box>
+                    );
+                  }
+                })}
               </Box>
-            </>
+            </Box>
           );
         })}
       </Stack>
@@ -193,6 +213,12 @@ const registerFormSxProps = {
   boxShadow: "0 5px 10px rgba(0, 0, 0, 0.1)",
 };
 
+const titleBoxSxProps = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+
 const todoSxProps = {
   background: "background.default",
   display: "flex",
@@ -204,7 +230,6 @@ const editSxProps = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  padding: "12px 0",
   ".MuiInputBase-input": {
     padding: "8px",
   },
@@ -214,7 +239,4 @@ const checkboxSxProps = {
   padding: 0,
   mr: 1,
   color: "primary.main",
-  "&.Mui-checked": {
-    color: "secondary.main",
-  },
 };

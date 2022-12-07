@@ -16,4 +16,13 @@ export const theme = createTheme({
   typography: {
     fontFamily: ['"Lato"', "sans-serif"].join(","),
   },
+  components: {
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          cursor: "pointer",
+        },
+      },
+    },
+  },
 });

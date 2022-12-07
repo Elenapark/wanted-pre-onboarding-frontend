@@ -78,11 +78,9 @@ const Register = () => {
             },
           }}
           helperText={
-            !input.email
-              ? "이메일을 입력해주세요."
-              : !validEmail
-              ? "이메일은 '@'문자를 포함해야 합니다."
-              : ""
+            input.email &&
+            !validEmail &&
+            `이메일 형식은 '@' 문자를 포함해야 합니다.`
           }
         />
         <TextField
@@ -93,11 +91,9 @@ const Register = () => {
           onChange={handleInputChange}
           autoComplete="off"
           helperText={
-            !input.password
-              ? "비밀번호를 입력해주세요."
-              : !validPassword
-              ? "비밀번호는 대,소문자,숫자,특수기호를 각 1글자 이상 포함해야 합니다."
-              : ""
+            input.password &&
+            !validPassword &&
+            "비밀번호는 대,소문자,숫자,특수기호를 각 1글자 포함 8자 이상이어야 합니다."
           }
         />
         <Button

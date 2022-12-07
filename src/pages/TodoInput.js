@@ -5,7 +5,7 @@ const TodoInput = ({ value, onChange, onSubmit, ...props }) => {
   return (
     <Box component="form" onSubmit={onSubmit} sx={inputContainerSxProps}>
       <TextField
-        label="Add your new todo."
+        label="오늘 할일은 무엇인가요?"
         name="todo"
         value={value}
         onChange={onChange}
@@ -13,7 +13,7 @@ const TodoInput = ({ value, onChange, onSubmit, ...props }) => {
         {...props}
       />
       <Button type="submit" variant="contained">
-        추가
+        할일 추가하기
       </Button>
     </Box>
   );
@@ -24,5 +24,4 @@ export default TodoInput;
 const inputContainerSxProps = {
   display: "flex",
   flexDirection: "column",
-  margin: "10px 0",
 };
