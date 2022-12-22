@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/wanted-pre-onboarding-frontend/static/js/main.0190b443.js",
+    "main.js": "/wanted-pre-onboarding-frontend/static/js/main.a94793c6.js",
     "index.html": "/wanted-pre-onboarding-frontend/index.html",
-    "main.0190b443.js.map": "/wanted-pre-onboarding-frontend/static/js/main.0190b443.js.map"
+    "main.a94793c6.js.map": "/wanted-pre-onboarding-frontend/static/js/main.a94793c6.js.map"
   },
   "entrypoints": [
-    "static/js/main.0190b443.js"
+    "static/js/main.a94793c6.js"
   ]
 }
