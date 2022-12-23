@@ -1,11 +1,11 @@
 import { Box, Button, TextField } from "@mui/material";
 import React from "react";
 
-const TodoInput = ({ value, onChange, onSubmit, ...props }) => {
+const TodoInput = ({ label, value, onChange, onSubmit, btnText, ...props }) => {
   return (
     <Box component="form" onSubmit={onSubmit} sx={inputContainerSxProps}>
       <TextField
-        label="오늘 할일은 무엇인가요?"
+        label={label}
         name="todo"
         value={value}
         onChange={onChange}
@@ -13,7 +13,7 @@ const TodoInput = ({ value, onChange, onSubmit, ...props }) => {
         {...props}
       />
       <Button type="submit" variant="contained">
-        할일 추가하기
+        {btnText}
       </Button>
     </Box>
   );

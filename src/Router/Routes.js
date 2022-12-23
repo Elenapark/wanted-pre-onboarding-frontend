@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import SignIn from "../pages/SignIn";
 import Register from "../pages/Register";
-import TodoList from "../pages/TodoList";
+import Todo from "../pages/Todo";
 
 const errorSxProps = {
   height: "100vh",
@@ -29,7 +29,7 @@ const routes = [
       },
       {
         path: "/todo",
-        element: <TodoList />,
+        element: <Todo />,
       },
     ],
   },
