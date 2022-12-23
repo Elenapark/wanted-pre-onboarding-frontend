@@ -1,1 +1,1 @@
-export const API = "https://pre-onboarding-selection-task.shop";
+export const baseURL = "https://pre-onboarding-selection-task.shop";

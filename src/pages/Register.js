@@ -2,7 +2,7 @@ import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register } from "../services/register_service";
-import { ACCESS_TOKEN_KEY } from "./TodoList";
+import { ACCESS_TOKEN_KEY } from "./Todo";
 import customStorage from "../utils/customStorage";
 
 const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
@@ -30,15 +30,18 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = input;
-    const res = await register({
-      email,
-      password,
-    });
-    if (res.access_token) {
-      alert("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
-      navigate("/signIn");
-    } else {
-      setResError(res);
+    try {
+      const res = await register({
+        email,
+        password,
+      });
+
+      if (res.data.access_token) {
+        alert("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
+        navigate("/signIn");
+      }
+    } catch (err) {
+      setResError(err.response.data);
     }
   };
 

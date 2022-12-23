@@ -24,19 +24,20 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = input;
-    const res = await signIn({
-      email,
-      password,
-    });
+    try {
+      const res = await signIn({
+        email,
+        password,
+      });
+      if (res?.data?.access_token) {
+        setAccessToken(res.data.access_token);
+        customStorage.setItem("accessToken", res.data.access_token);
 
-    if (res.access_token) {
-      setAccessToken(res.access_token);
-      customStorage.setItem("accessToken", res.access_token);
-
-      alert("로그인되었습니다.");
-      navigate("/todo");
-    } else {
-      setResError(res);
+        alert("로그인되었습니다.");
+        navigate("/todo");
+      }
+    } catch (err) {
+      setResError(err.response.data);
     }
   };
 
